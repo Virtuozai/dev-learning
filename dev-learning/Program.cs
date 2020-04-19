@@ -10,8 +10,6 @@ namespace dev_learning
             CreateHostBuilder(args).Build().Run();
         }
 
-        //test
-
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
