@@ -7,5 +7,5 @@ To run the project select dev_learning launch profile instead of IIS Express.
 Project will run on https://localhost:5001
 
 Postman configuration to test API:
-* Go File/Settings
+* Go to File/Settings
 * Turn SSL certiicate verification off.
