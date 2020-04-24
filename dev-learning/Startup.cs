@@ -33,8 +33,6 @@ namespace dev_learning
             ));
             services.AddMvc();
 
-            services.AddDbContext<DbContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("dev_learningContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
