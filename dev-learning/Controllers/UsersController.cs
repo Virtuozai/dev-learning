@@ -95,6 +95,20 @@ namespace dev_learning.Controllers
             return user;
         }
 
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(AuthRequest authRequest)
+        {
+            var users = await _context.Users.ToListAsync();
+            var doesUserExists = users.Exists(user => user.email == authRequest.email && user.password == authRequest.password);
+
+            if (doesUserExists)
+            {
+                return Ok();
+            }
+            return Unauthorized();
+        }
+
+
         private bool UserExists(int id)
         {
             return _context.Users.Any(e => e.id == id);
