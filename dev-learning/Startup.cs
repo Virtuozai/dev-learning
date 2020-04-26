@@ -21,10 +21,17 @@ namespace dev_learning
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContextPool<UserContext>(
+            services.AddDbContextPool<MyDbContext>(
                options => options.UseMySql(Configuration.GetConnectionString("dbConfig")
             ));
             services.AddMvc();
+            services
+                .AddControllers()
+                .AddNewtonsoftJson(options =>
+                  {
+                     options.SerializerSettings.ReferenceLoopHandling =
+                     Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                });
 
         }
 

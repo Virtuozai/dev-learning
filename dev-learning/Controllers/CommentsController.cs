@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using dev_learning.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace dev_learning.Controllers
 {
@@ -48,10 +49,15 @@ namespace dev_learning.Controllers
 
         // POST api/Comments
         [HttpPost]
-        public async Task<ActionResult<Comment>> PostComment(Comment comment)
+        public async Task<ActionResult<Comment>> PostComment([FromBody]Comment comment)
         {
+            comment.User = _context.Users.FirstOrDefault(x => x.Id == comment.UserId);
+
+            comment.User.Comments.Add(comment);
             _context.Comments.Add(comment);
+
             await _context.SaveChangesAsync();
+
             return CreatedAtAction("GetComment", new { id = comment.Id }, comment);
         }
 
