@@ -93,6 +93,21 @@ namespace dev_learning.Controllers
             return user;
         }
 
+        // POST: api/Users/login
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(AuthRequest authRequest)
+        {
+            var users = await _context.Users.ToListAsync();
+            var isUserValid = users.Exists(user => user.email == authRequest.email && user.password == authRequest.password);
+
+            if (isUserValid)
+            {
+                return Ok();
+            }
+            return Unauthorized();
+        }
+
+
         private bool UserExists(int id)
         {
             return _context.Users.Any(e => e.id == id);
