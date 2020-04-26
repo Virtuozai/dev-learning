@@ -2,14 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 namespace dev_learning.Models
 {
-    public class UserContext : DbContext
+    public class MyDbContext : DbContext
     {
-        public UserContext(DbContextOptions<UserContext> options)
+        public MyDbContext(DbContextOptions<MyDbContext> options)
             : base(options)
         {
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
     }
 }

@@ -11,9 +11,9 @@ namespace dev_learning.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly UserContext _context;
+        private readonly MyDbContext _context;
 
-        public UsersController(UserContext context)
+        public UsersController(MyDbContext context)
         {
             _context = context;
         }
