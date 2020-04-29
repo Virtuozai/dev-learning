@@ -72,13 +72,13 @@ namespace dev_learning.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
-           var isEmailValid = RegexUtilities.IsEmailValid(user.email);
+            var isEmailValid = RegexUtilities.IsEmailValid(user.email);
             if (isEmailValid)
             {
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
                 return CreatedAtAction("GetUser", new { id = user.id }, user);
-            }else
+            } else
             {
                 return ValidationProblem("Provided email is invalid");
             }
