@@ -1,4 +1,6 @@
-﻿namespace dev_learning.Models
+﻿using System.Collections.Generic;
+
+namespace dev_learning.Models
 {
     public enum UserRole
     {
@@ -19,6 +21,7 @@
         public string Password { get; set; }
         public UserRole Role { get; set; }
         public int LearningDaysLeft { get; set; }
+        public virtual ICollection<UserSubject> Subjects { get; set; }
 
     }
 }
