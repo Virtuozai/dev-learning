@@ -1,4 +1,4 @@
-﻿using System.Configuration;
+﻿using dev_learning.Extensions;
 using Microsoft.EntityFrameworkCore;
 namespace dev_learning.Models
 {
@@ -11,5 +11,9 @@ namespace dev_learning.Models
 
         public DbSet<User> Users { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.RemovePluralizingTableNameConvention();
+        }
     }
 }
