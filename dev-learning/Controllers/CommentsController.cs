@@ -33,13 +33,6 @@ namespace dev_learning.Controllers
             return comment;
         }
 
-        // GET: api/Comments/User/5
-        [HttpGet("User/{userId}")]
-        public async Task<List<Comment>> GetUserComments(int userId)
-        {
-            return await _context.Comments.Where(c => c.UserId == userId).ToListAsync();
-        }
-
         // GET: api/Comments/Subject/5
         [HttpGet("Subject/{subjectId}")]
         public async Task<List<Comment>> GetSubjectComments(int subjectId)
@@ -60,6 +53,7 @@ namespace dev_learning.Controllers
             return CreatedAtAction("GetComment", new { id = comment.Id }, comment);
         }
 
+        // PUT api/Comments/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutComment(int id, Comment comment)
         {

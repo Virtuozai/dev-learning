@@ -73,11 +73,6 @@ namespace dev_learning.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
-<<<<<<< HEAD
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
-=======
             var isEmailValid = RegexUtilities.IsEmailValid(user.Email);
             if (isEmailValid)
             {
@@ -88,7 +83,6 @@ namespace dev_learning.Controllers
             {
                 return ValidationProblem("Provided email is invalid");
             }
->>>>>>> 0d25ec79c6b8fcce9fc0a9447eccc1c16a505b0b
         }
 
         // DELETE: api/Users/5
