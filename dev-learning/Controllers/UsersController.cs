@@ -11,9 +11,9 @@ namespace dev_learning.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly UserContext _context;
+        private readonly DevLearningContext _context;
 
-        public UsersController(UserContext context)
+        public UsersController(DevLearningContext context)
         {
             _context = context;
         }
@@ -43,7 +43,7 @@ namespace dev_learning.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, User user)
         {
-            if (id != user.id)
+            if (id != user.Id)
             {
                 return BadRequest();
             }
@@ -73,17 +73,16 @@ namespace dev_learning.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
-            var isEmailValid = RegexUtilities.IsEmailValid(user.email);
+            var isEmailValid = RegexUtilities.IsEmailValid(user.Email);
             if (isEmailValid)
             {
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
-                return CreatedAtAction("GetUser", new { id = user.id }, user);
+                return CreatedAtAction("GetUser", new { id = user.Id }, user);
             } else
             {
                 return ValidationProblem("Provided email is invalid");
             }
-           
         }
 
         // DELETE: api/Users/5
@@ -107,7 +106,7 @@ namespace dev_learning.Controllers
         public async Task<IActionResult> Login(AuthRequest authRequest)
         {
             var users = await _context.Users.ToListAsync();
-            var isUserValid = users.Exists(user => user.email == authRequest.email && user.password == authRequest.password);
+            var isUserValid = users.Exists(user => user.Email == authRequest.email && user.Password == authRequest.password);
 
             if (isUserValid)
             {
@@ -119,7 +118,7 @@ namespace dev_learning.Controllers
 
         private bool UserExists(int id)
         {
-            return _context.Users.Any(e => e.id == id);
+            return _context.Users.Any(e => e.Id == id);
         }
     }
 }

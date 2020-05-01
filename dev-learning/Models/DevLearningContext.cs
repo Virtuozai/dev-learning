@@ -1,19 +1,22 @@
-﻿using dev_learning.Extensions;
+﻿using System.Configuration;
+using dev_learning.Extensions;
 using Microsoft.EntityFrameworkCore;
 namespace dev_learning.Models
 {
-    public class UserContext : DbContext
+    public class DevLearningContext : DbContext
     {
-        public UserContext(DbContextOptions<UserContext> options)
+        public DevLearningContext(DbContextOptions<DevLearningContext> options)
             : base(options)
         {
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Team> Teams { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.RemovePluralizingTableNameConvention();
         }
+
     }
 }
