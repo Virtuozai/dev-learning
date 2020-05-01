@@ -10,7 +10,6 @@ namespace dev_learning.Models
         TeamLead,
         God,
     }
-
     public class User
     {
         public int Id { get; set; }

@@ -26,9 +26,7 @@ namespace dev_learning
 
             services.AddControllers().AddNewtonsoftJson(options =>
             options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-           
-            services.AddMvc();
-
+          
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
