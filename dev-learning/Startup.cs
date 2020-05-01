@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 namespace dev_learning
 {
@@ -21,9 +20,13 @@ namespace dev_learning
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContextPool<MyDbContext>(
+            services.AddDbContextPool<DevLearningContext>(
                options => options.UseMySql(Configuration.GetConnectionString("dbConfig")
             ));
+
+            services.AddControllers().AddNewtonsoftJson(options =>
+            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+           
             services.AddMvc();
             services
                 .AddControllers()

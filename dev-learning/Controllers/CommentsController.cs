@@ -12,9 +12,9 @@ namespace dev_learning.Controllers
     [Route("api/[controller]")]
     public class CommentsController : Controller
     {
-        private readonly MyDbContext _context;
+        private readonly DevLearningContext _context;
 
-        public CommentsController(MyDbContext context)
+        public CommentsController(DevLearningContext context)
         {
             _context = context;
         }
@@ -53,7 +53,6 @@ namespace dev_learning.Controllers
         {
             comment.User = _context.Users.FirstOrDefault(x => x.Id == comment.UserId);
 
-            comment.User.Comments.Add(comment);
             _context.Comments.Add(comment);
 
             await _context.SaveChangesAsync();

@@ -11,9 +11,9 @@ namespace dev_learning.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly MyDbContext _context;
+        private readonly DevLearningContext _context;
 
-        public UsersController(MyDbContext context)
+        public UsersController(DevLearningContext context)
         {
             _context = context;
         }
@@ -68,13 +68,27 @@ namespace dev_learning.Controllers
 
             return NoContent();
         }
+
         // POST: api/Users
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
+<<<<<<< HEAD
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
             return CreatedAtAction("GetUser", new { id = user.Id }, user);
+=======
+            var isEmailValid = RegexUtilities.IsEmailValid(user.Email);
+            if (isEmailValid)
+            {
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+                return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            } else
+            {
+                return ValidationProblem("Provided email is invalid");
+            }
+>>>>>>> 0d25ec79c6b8fcce9fc0a9447eccc1c16a505b0b
         }
 
         // DELETE: api/Users/5
@@ -92,6 +106,21 @@ namespace dev_learning.Controllers
 
             return user;
         }
+
+        // POST: api/Users/login
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(AuthRequest authRequest)
+        {
+            var users = await _context.Users.ToListAsync();
+            var isUserValid = users.Exists(user => user.Email == authRequest.email && user.Password == authRequest.password);
+
+            if (isUserValid)
+            {
+                return Ok();
+            }
+            return Unauthorized();
+        }
+
 
         private bool UserExists(int id)
         {
