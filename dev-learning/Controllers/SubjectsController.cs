@@ -13,9 +13,9 @@ namespace dev_learning.Controllers
     [ApiController]
     public class SubjectsController : ControllerBase
     {
-        private readonly UserSubjectContext _context;
+        private readonly DevLearningContext _context;
 
-        public SubjectsController(UserSubjectContext context)
+        public SubjectsController(DevLearningContext context)
         {
             _context = context;
         }
