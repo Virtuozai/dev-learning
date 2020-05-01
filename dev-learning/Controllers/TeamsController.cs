@@ -13,9 +13,9 @@ namespace dev_learning.Controllers
     [Route("api/[controller]")]
     class TeamsController : Controller
     {
-        private readonly TeamContext _context;
+        private readonly DevLearningContext _context;
 
-        public TeamsController(TeamContext context)
+        public TeamsController(DevLearningContext context)
         {
             _context = context;
         }

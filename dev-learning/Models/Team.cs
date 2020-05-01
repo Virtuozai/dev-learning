@@ -4,7 +4,7 @@ using System.Text;
 
 namespace dev_learning.Models
 {
-    class Team
+    public class Team
     {
         public int Id { get; set; }
 
