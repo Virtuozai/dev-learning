@@ -11,28 +11,28 @@ namespace dev_learning.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserSubjectController : ControllerBase
+    public class UserSubjectsController : ControllerBase
     {
         private readonly DevLearningContext _context;
 
-        public UserSubjectController(DevLearningContext context)
+        public UserSubjectsController(DevLearningContext context)
         {
             _context = context;
         }
 
         // GET: api/UserSubjects/User/5
-        [HttpGet("User/{id}")]
-        public async Task<ActionResult<IEnumerable<UserSubject>>> GetUserSubjectsByUserId(int id)
+        [HttpGet("User/{userId}")]
+        public async Task<List<UserSubject>> GetUserSubjectsByUserId(int userId)
         {
-            var userSubjects = await _context.UserSubjects.Where(s => s.UserId == id).ToListAsync();
+            var userSubjects = await _context.UserSubjects.Where(s => s.UserId == userId).ToListAsync();
             return userSubjects;
         }
 
         // GET: api/UserSubjects/Subject/5
-        [HttpGet("Subject/{id}")]
-        public async Task<ActionResult<IEnumerable<UserSubject>>> GetUserSubjectsBySubjectId(int id)
+        [HttpGet("Subject/{subjectId}")]
+        public async Task<List<UserSubject>> GetUserSubjectsBySubjectId(int subjectId)
         {
-            var userSubjects = await _context.UserSubjects.Where(s => s.SubjectId == id).ToListAsync();
+            var userSubjects = await _context.UserSubjects.Where(s => s.SubjectId == subjectId).ToListAsync();
             return userSubjects;
         }
 
@@ -41,9 +41,6 @@ namespace dev_learning.Controllers
         public async Task<ActionResult<UserSubject>> PostUserSubject(UserSubject userSubject)
         {
             _context.UserSubjects.Add(userSubject);
-            /*userSubject.User = _context.Users.FirstOrDefault(x => x.Id == userSubject.UserId);
-            userSubject.Subject = _context.Subjects.FirstOrDefault(x => x.Id == userSubject.SubjectId);
-            userSubject.User.Subjects.Add()*/
             await _context.SaveChangesAsync();
             return CreatedAtAction("GetUserSubject", new { id = userSubject.Id }, userSubject);
         }
