@@ -38,11 +38,11 @@ namespace dev_learning.Controllers
 
         // POST: api/UserSubject
         [HttpPost]
-        public async Task<ActionResult<UserSubject>> PostUserSubject(UserSubject userSubject)
+        public async Task<IActionResult> PostUserSubject(UserSubject userSubject)
         {
             _context.UserSubjects.Add(userSubject);
             await _context.SaveChangesAsync();
-            return CreatedAtAction("GetUserSubject", new { id = userSubject.Id }, userSubject);
+            return NoContent();
         }
 
 

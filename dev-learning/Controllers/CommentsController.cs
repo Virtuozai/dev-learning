@@ -42,15 +42,13 @@ namespace dev_learning.Controllers
 
         // POST api/Comments
         [HttpPost]
-        public async Task<ActionResult<Comment>> PostComment([FromBody]Comment comment)
+        public async Task<IActionResult> PostComment(Comment comment)
         {
-            comment.User = _context.Users.FirstOrDefault(x => x.Id == comment.UserId);
-
             _context.Comments.Add(comment);
 
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetComment", new { id = comment.Id }, comment);
+            return NoContent();
         }
 
         // PUT api/Comments/5
