@@ -4,9 +4,21 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using dev_learning.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using System;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Options;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using dev_learning.Constants;
 
 namespace dev_learning.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -19,6 +31,7 @@ namespace dev_learning.Controllers
         }
 
         // GET: api/Users
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
@@ -70,6 +83,7 @@ namespace dev_learning.Controllers
         }
 
         // POST: api/Users
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
@@ -102,23 +116,87 @@ namespace dev_learning.Controllers
         }
 
         // POST: api/Users/login
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login(AuthRequest authRequest)
         {
+
             var users = await _context.Users.ToListAsync();
-            var isUserValid = users.Exists(user => user.Email == authRequest.email && user.Password == authRequest.password);
+            var isUserValid = users.Exists(user => user.Email == authRequest.Email && user.Password == authRequest.Password);
 
             if (isUserValid)
             {
-                return Ok();
+                var user = users.Find(user => user.Email == authRequest.Email);
+                return Ok(GenerateAccessToken(user));
+    
             }
-            return Unauthorized();
+            else
+            {
+                return Unauthorized("user is not valid");
+            }
         }
 
+        // GET: api/Users/current_user
+        [HttpGet("current_user")]
+        public ActionResult<TinyUserInfo> GetCurrentUser()
+        {
+            var currentUser = GetTinyUserInfo();
+            if (currentUser != null)
+            {
+                return currentUser;
+            }else
+            {
+                return Unauthorized();
+            }
+        }
+
+        private string GenerateAccessToken(User user)
+        {
+            var claims = new[]
+            {
+                new Claim(ClaimsNames.ID, user.Id.ToString()),
+                new Claim(ClaimsNames.FullName, user.Firstname + " " + user.Lastname),
+                new Claim(ClaimsNames.Email, user.Email),
+                new Claim(ClaimsNames.Role, user.Role.ToString())
+            };
+
+            var bytes = Encoding.UTF8.GetBytes(JwtToken.EncryptionKey);
+            var key = new SymmetricSecurityKey(bytes);
+            var signingCredentials = new SigningCredentials(
+              key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                JwtToken.Issuer,
+                JwtToken.Audience,
+                claims, notBefore: DateTime.Now,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials
+                );
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private TinyUserInfo GetTinyUserInfo()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity != null)
+            {
+                var userId = identity.FindFirst(ClaimsNames.ID).Value;
+                var userEmail = identity.FindFirst(ClaimsNames.Email).Value;
+                var userRole = identity.FindFirst(ClaimsNames.Role).Value;
+                var userFullName = identity.FindFirst(ClaimsNames.FullName).Value;
+                return new TinyUserInfo(userFullName, userEmail, userRole, userId);
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         private bool UserExists(int id)
         {
             return _context.Users.Any(e => e.Id == id);
         }
+
+        
     }
 }
