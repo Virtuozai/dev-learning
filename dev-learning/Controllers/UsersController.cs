@@ -31,7 +31,6 @@ namespace dev_learning.Controllers
         }
 
         // GET: api/Users
-        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
@@ -83,7 +82,6 @@ namespace dev_learning.Controllers
         }
 
         // POST: api/Users
-        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
@@ -120,7 +118,6 @@ namespace dev_learning.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(AuthRequest authRequest)
         {
-
             var users = await _context.Users.ToListAsync();
             var isUserValid = users.Exists(user => user.Email == authRequest.Email && user.Password == authRequest.Password);
 
@@ -128,7 +125,6 @@ namespace dev_learning.Controllers
             {
                 var user = users.Find(user => user.Email == authRequest.Email);
                 return Ok(GenerateAccessToken(user));
-    
             }
             else
             {
@@ -196,7 +192,5 @@ namespace dev_learning.Controllers
         {
             return _context.Users.Any(e => e.Id == id);
         }
-
-        
     }
 }

@@ -40,7 +40,6 @@ namespace dev_learning
             services.AddAuthentication("OAuth")
                 .AddJwtBearer("OAuth", config =>
                 {
-
                     config.TokenValidationParameters = new TokenValidationParameters()
                     {
                         ValidIssuer = JwtToken.Issuer,
@@ -53,7 +52,6 @@ namespace dev_learning
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseAuthentication();
-
 
             if (env.IsDevelopment())
             {
