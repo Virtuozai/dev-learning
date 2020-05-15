@@ -90,6 +90,9 @@ namespace dev_learning.Controllers
             {
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
+                var claimsPrincipal = CreateClaims(user);
+                await Request.HttpContext.SignInAsync("Cookies", claimsPrincipal);
+
                 return CreatedAtAction("GetUser", new { id = user.Id }, user);
             } else
             {
@@ -124,12 +127,23 @@ namespace dev_learning.Controllers
             if (isUserValid)
             {
                 var user = users.Find(user => user.Email == authRequest.Email);
-                return Ok(GenerateAccessToken(user));
+
+                var claimsPrincipal = CreateClaims(user);
+                await Request.HttpContext.SignInAsync("Cookies", claimsPrincipal);
+
+                return NoContent();
             }
             else
             {
                 return Unauthorized("user is not valid");
             }
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
+            return NoContent();
         }
 
         // GET: api/Users/current_user
@@ -146,31 +160,6 @@ namespace dev_learning.Controllers
             }
         }
 
-        private string GenerateAccessToken(User user)
-        {
-            var claims = new[]
-            {
-                new Claim(ClaimsNames.ID, user.Id.ToString()),
-                new Claim(ClaimsNames.FullName, user.Firstname + " " + user.Lastname),
-                new Claim(ClaimsNames.Email, user.Email),
-                new Claim(ClaimsNames.Role, user.Role.ToString())
-            };
-
-            var bytes = Encoding.UTF8.GetBytes(JwtToken.EncryptionKey);
-            var key = new SymmetricSecurityKey(bytes);
-            var signingCredentials = new SigningCredentials(
-              key, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                JwtToken.Issuer,
-                JwtToken.Audience,
-                claims, notBefore: DateTime.Now,
-                expires: DateTime.Now.AddDays(1),
-                signingCredentials
-                );
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-
         private TinyUserInfo GetTinyUserInfo()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
@@ -179,13 +168,23 @@ namespace dev_learning.Controllers
                 var userId = identity.FindFirst(ClaimsNames.ID).Value;
                 var userEmail = identity.FindFirst(ClaimsNames.Email).Value;
                 var userRole = identity.FindFirst(ClaimsNames.Role).Value;
-                var userFullName = identity.FindFirst(ClaimsNames.FullName).Value;
-                return new TinyUserInfo(userFullName, userEmail, userRole, userId);
+                return new TinyUserInfo(userEmail, userRole, userId);
             }
             else
             {
                 return null;
             }
+        }
+        private ClaimsPrincipal CreateClaims(User user)
+        {
+            var claimsIdentity = new ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimsNames.ID, user.Id.ToString()),
+                    new Claim(ClaimsNames.Email, user.Email),
+                    new Claim(ClaimsNames.Role, user.Role.ToString())
+                }, "Cookies");
+
+            return new ClaimsPrincipal(claimsIdentity);
         }
 
         private bool UserExists(int id)
