@@ -1,23 +1,19 @@
-using dev_learning.Constants;
+
 using dev_learning.Models;
-using Microsoft.AspNetCore.Authentication;
+
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.CookiePolicy;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Authorization;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
+
 using System.Threading.Tasks;
-using System;
+
 
 namespace dev_learning
 {
@@ -45,6 +41,8 @@ namespace dev_learning
                     {
                         builder.WithOrigins("https://localhost:5000")
                         .WithOrigins("http://localhost:3000")
+                        .AllowAnyHeader()
+                        .AllowCredentials()
                         .AllowAnyMethod();
                     });
             });
@@ -74,8 +72,6 @@ namespace dev_learning
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseAuthentication();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -86,6 +82,8 @@ namespace dev_learning
             app.UseRouting();
 
             app.UseCors(CrossOriginsConfigName);
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

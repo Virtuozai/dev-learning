@@ -5,16 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using dev_learning.Models;
 using Microsoft.AspNetCore.Authorization;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
-using System;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.Options;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using dev_learning.Constants;
+using System;
 
 namespace dev_learning.Controllers
 {
@@ -152,6 +146,7 @@ namespace dev_learning.Controllers
         public ActionResult<TinyUserInfo> GetCurrentUser()
         {
             var currentUser = GetTinyUserInfo();
+
             if (currentUser != null)
             {
                 return currentUser;
@@ -164,6 +159,7 @@ namespace dev_learning.Controllers
         private TinyUserInfo GetTinyUserInfo()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
+
             if (identity != null)
             {
                 var userId = identity.FindFirst(ClaimsNames.ID).Value;
