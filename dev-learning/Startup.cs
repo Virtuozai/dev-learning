@@ -17,11 +17,13 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using System;
 
 namespace dev_learning
 {
     public class Startup
     {
+        readonly string CrossOriginsConfigName = "_crossOriginsConfigName";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -36,19 +38,21 @@ namespace dev_learning
                options => options.UseMySql(Configuration.GetConnectionString("dbConfig")
             ));
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: CrossOriginsConfigName,
+                    builder =>
+                    {
+                        builder.WithOrigins("https://localhost:5000")
+                        .WithOrigins("http://localhost:3000")
+                        .AllowAnyMethod();
+                    });
+            });
+
+
             services.AddControllers().AddNewtonsoftJson(options =>
             options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
-            /*services.AddAuthentication("OAuth")
-                .AddJwtBearer("OAuth", config =>
-                {
-                    config.TokenValidationParameters = new TokenValidationParameters()
-                    {
-                        ValidIssuer = JwtToken.Issuer,
-                        ValidAudience = JwtToken.Audience,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtToken.EncryptionKey))
-                    };
-                });*/
             services.AddAuthentication(options =>
             {
                 options.DefaultScheme = "Cookies";
@@ -80,6 +84,8 @@ namespace dev_learning
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(CrossOriginsConfigName);
 
             app.UseAuthorization();
 

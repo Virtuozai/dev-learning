@@ -85,6 +85,7 @@ namespace dev_learning.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
+            
             var isEmailValid = RegexUtilities.IsEmailValid(user.Email);
             if (isEmailValid)
             {
