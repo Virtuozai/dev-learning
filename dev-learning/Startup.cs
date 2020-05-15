@@ -32,7 +32,8 @@ namespace dev_learning
                     builder =>
                     {
                         builder.WithOrigins("https://localhost:5000")
-                        .WithOrigins("https://localhost:3000");
+                        .WithOrigins("http://localhost:3000")
+                        .AllowAnyMethod();
                     });
             });
 
