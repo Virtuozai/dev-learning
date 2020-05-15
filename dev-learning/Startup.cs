@@ -33,7 +33,7 @@ namespace dev_learning
                     {
                         builder.WithOrigins("https://localhost:5000")
                         .WithOrigins("http://localhost:3000")
-                        .AllowAnyHeader();
+                        .AllowAnyMethod();
                     });
             });
 
