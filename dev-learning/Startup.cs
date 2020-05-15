@@ -5,11 +5,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace dev_learning
 {
     public class Startup
     {
+        readonly string CrossOriginsConfigName = "_crossOriginsConfigName";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -23,6 +25,17 @@ namespace dev_learning
             services.AddDbContextPool<DevLearningContext>(
                options => options.UseMySql(Configuration.GetConnectionString("dbConfig")
             ));
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: CrossOriginsConfigName,
+                    builder =>
+                    {
+                        builder.WithOrigins("https://localhost:5000")
+                        .WithOrigins("https://localhost:3000");
+                    });
+            });
+
 
             services.AddControllers().AddNewtonsoftJson(options =>
             options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -39,6 +52,8 @@ namespace dev_learning
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(CrossOriginsConfigName);
 
             app.UseAuthorization();
 
