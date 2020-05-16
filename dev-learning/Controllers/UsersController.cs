@@ -9,7 +9,6 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using dev_learning.Constants;
 using System;
-using Org.BouncyCastle.Bcpg;
 
 namespace dev_learning.Controllers
 {
