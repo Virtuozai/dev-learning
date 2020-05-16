@@ -24,6 +24,8 @@ namespace dev_learning.Controllers
         public async Task<ActionResult<Comment>> GetComment(int id)
         {
             var comment = await _context.Comments.FindAsync(id);
+            comment.User = await _context.Users.FindAsync(comment.UserId);
+            comment.Subject = await _context.Subjects.FindAsync(comment.SubjectId);
 
             if (comment == null)
             {
@@ -37,7 +39,7 @@ namespace dev_learning.Controllers
         [HttpGet("Subject/{subjectId}")]
         public async Task<List<Comment>> GetSubjectComments(int subjectId)
         {
-            return await _context.Comments.Where(c => c.SubjectId == subjectId).ToListAsync();
+            return await _context.Comments.Include(u => u.User).Where(c => c.SubjectId == subjectId).ToListAsync();
         }
 
         // POST api/Comments

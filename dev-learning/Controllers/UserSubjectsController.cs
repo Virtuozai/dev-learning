@@ -24,7 +24,7 @@ namespace dev_learning.Controllers
         [HttpGet("User/{userId}")]
         public async Task<List<UserSubject>> GetUserSubjectsByUserId(int userId)
         {
-            var userSubjects = await _context.UserSubjects.Where(s => s.UserId == userId).ToListAsync();
+            var userSubjects = await _context.UserSubjects.Include(s => s.Subject).Where(s => s.UserId == userId).ToListAsync();
             return userSubjects;
         }
 
@@ -32,7 +32,7 @@ namespace dev_learning.Controllers
         [HttpGet("Subject/{subjectId}")]
         public async Task<List<UserSubject>> GetUserSubjectsBySubjectId(int subjectId)
         {
-            var userSubjects = await _context.UserSubjects.Where(s => s.SubjectId == subjectId).ToListAsync();
+            var userSubjects = await _context.UserSubjects.Include(u => u.User).Where(s => s.SubjectId == subjectId).ToListAsync();
             return userSubjects;
         }
 
