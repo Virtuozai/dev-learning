@@ -20,10 +20,8 @@ namespace dev_learning.Models
         {
             modelBuilder.Entity<UserSubject>(entity =>
             {
-                entity.HasKey(e => new {
-                    e.UserId,
-                    e.SubjectId
-                });
+                entity.HasKey(e => e.Id);
+
                 entity.HasOne(ot => ot.User)
                     .WithMany(o => o.Subjects)
                     .HasForeignKey(ot => ot.UserId);
