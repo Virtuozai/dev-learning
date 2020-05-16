@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 namespace dev_learning.Controllers
 {
     [Route("api/[controller]")]
-    class TeamsController : Controller
+    public class TeamsController : Controller
     {
         private readonly DevLearningContext _context;
 
@@ -20,9 +20,16 @@ namespace dev_learning.Controllers
             _context = context;
         }
 
-        // GET: api/Team
+        // GET: api/Teams
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Team>>> GetTeams()
+        {
+            return await _context.Teams.ToListAsync();
+        }
+
+        // GET: api/Teams/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Team>> GetTeam(int id)
+        public async Task<ActionResult<Team>> GetTeamById(int id)
         {
             var team = await _context.Teams.FindAsync(id);
 
@@ -36,11 +43,11 @@ namespace dev_learning.Controllers
 
         // Post api/Teams
         [HttpPost]
-        public async Task<ActionResult<Team>> PostTeam([FromBody]Team team)
+        public async Task<IActionResult> PostTeam([FromBody]Team team)
         {
             _context.Teams.Add(team);
             await _context.SaveChangesAsync();
-            return CreatedAtAction("GetUser", new { id = team.Id }, team);
+            return NoContent();
         }
 
         [HttpPut("{id}")]

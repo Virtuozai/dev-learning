@@ -83,18 +83,19 @@ namespace dev_learning.Controllers
 
         // POST: api/Users
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<IActionResult> PostUser(User user)
         {
             
             var isEmailValid = RegexUtilities.IsEmailValid(user.Email);
             if (isEmailValid)
             {
+                if (user.LearningDaysLeft == 0) user.LearningDaysLeft = 4;
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
                 var claimsPrincipal = CreateClaims(user);
                 await Request.HttpContext.SignInAsync("Cookies", claimsPrincipal);
 
-                return CreatedAtAction("GetUser", new { id = user.Id }, user);
+                return NoContent();
             } else
             {
                 return ValidationProblem("Provided email is invalid");

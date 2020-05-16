@@ -27,7 +27,6 @@ namespace dev_learning.Controllers
             return await _context.Subjects.ToListAsync();
         }
 
-
         // GET: api/Subjects/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Subject>> GetSubject(int id)
@@ -44,11 +43,11 @@ namespace dev_learning.Controllers
 
         // POST: api/Subjects
         [HttpPost]
-        public async Task<ActionResult<Subject>> PostSubject(Subject subject)
+        public async Task<IActionResult> PostSubject(Subject subject)
         {
             _context.Subjects.Add(subject);
             await _context.SaveChangesAsync();
-            return CreatedAtAction("GetSubject", new { id = subject.Id }, subject);
+            return NoContent();
         }
 
 
