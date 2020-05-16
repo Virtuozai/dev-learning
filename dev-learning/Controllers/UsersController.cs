@@ -76,6 +76,7 @@ namespace dev_learning.Controllers
             var isEmailValid = RegexUtilities.IsEmailValid(user.Email);
             if (isEmailValid)
             {
+                if (user.LearningDaysLeft == 0) user.LearningDaysLeft = 4;
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
                 return NoContent();
