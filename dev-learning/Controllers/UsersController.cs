@@ -9,6 +9,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using dev_learning.Constants;
 using System;
+using Org.BouncyCastle.Bcpg;
 
 namespace dev_learning.Controllers
 {
@@ -144,9 +145,10 @@ namespace dev_learning.Controllers
 
         // GET: api/Users/current_user
         [HttpGet("current_user")]
-        public ActionResult<TinyUserInfo> GetCurrentUser()
+        public async Task<ActionResult<User>> GetCurrentUser()
         {
-            var currentUser = GetTinyUserInfo();
+            var userId = Int32.Parse((HttpContext.User.Identity as ClaimsIdentity).FindFirst(ClaimsNames.ID).Value);
+            var currentUser = await _context.Users.FindAsync(userId);
 
             if (currentUser != null)
             {
