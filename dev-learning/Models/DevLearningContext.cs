@@ -18,18 +18,10 @@ namespace dev_learning.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserSubject>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-
-                entity.HasOne(ot => ot.User)
-                    .WithMany(o => o.Subjects)
-                    .HasForeignKey(ot => ot.UserId);
-
-                entity.HasOne(ot => ot.Subject)
-                    .WithMany(t => t.Users)
-                    .HasForeignKey(ot => ot.SubjectId);
-            });
+            modelBuilder.Entity<User>()
+                .HasOne(t => t.Team)
+                .WithOne(u => u.TeamLead)
+                .HasForeignKey<Team>(u => u.TeamLeadId);
 
             modelBuilder.RemovePluralizingTableNameConvention();
         }

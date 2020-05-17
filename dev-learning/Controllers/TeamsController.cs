@@ -24,7 +24,7 @@ namespace dev_learning.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Team>>> GetTeams()
         {
-            return await _context.Teams.ToListAsync();
+            return await _context.Teams.Include(u => u.TeamLead).ToListAsync();
         }
 
         // GET: api/Teams/5
@@ -32,6 +32,7 @@ namespace dev_learning.Controllers
         public async Task<ActionResult<Team>> GetTeamById(int id)
         {
             var team = await _context.Teams.FindAsync(id);
+            team.TeamLead = await _context.Users.FindAsync(team.TeamLeadId);
 
             if (team == null)
             {
