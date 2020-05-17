@@ -25,7 +25,6 @@ namespace dev_learning.Controllers
         }
 
         // GET: api/Users
-        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
