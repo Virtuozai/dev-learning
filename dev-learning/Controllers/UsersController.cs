@@ -25,6 +25,7 @@ namespace dev_learning.Controllers
         }
 
         // GET: api/Users
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
@@ -157,6 +158,13 @@ namespace dev_learning.Controllers
             {
                 return Unauthorized();
             }
+        }
+
+        // GET: api/Users/team_users/5
+        [HttpGet("team_users/{teamId}")]
+        public async Task<List<User>> GetTeamUsers(int teamId)
+        {
+            return await _context.Users.Where(c => c.TeamId == teamId).ToListAsync();
         }
 
         private TinyUserInfo GetTinyUserInfo()
