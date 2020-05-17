@@ -14,6 +14,7 @@ namespace dev_learning.Models
         public DbSet<User> Users { get; set; }
         public DbSet<UserSubject> UserSubjects { get; set; }
         public DbSet<Team> Teams { get; set; }
+
         public DbSet<Comment> Comments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

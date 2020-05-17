@@ -2,21 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using dev_learning.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
+using dev_learning.Models;
 
 namespace dev_learning.Controllers
 {
     [Route("api/[controller]")]
-    public class CommentsController : Controller
+    [ApiController]
+    public class CommentsController : ControllerBase
     {
         private readonly DevLearningContext _context;
 
         public CommentsController(DevLearningContext context)
         {
             _context = context;
+        }
+
+        // GET: api/Comments
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Comment>>> GetComments()
+        {
+            return await _context.Comments.ToListAsync();
         }
 
         // GET: api/Comments/5
@@ -42,18 +50,7 @@ namespace dev_learning.Controllers
             return await _context.Comments.Include(u => u.User).Where(c => c.SubjectId == subjectId).ToListAsync();
         }
 
-        // POST api/Comments
-        [HttpPost]
-        public async Task<IActionResult> PostComment(Comment comment)
-        {
-            _context.Comments.Add(comment);
-
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        // PUT api/Comments/5
+        // PUT: api/Comments/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutComment(int id, Comment comment)
         {
@@ -83,7 +80,17 @@ namespace dev_learning.Controllers
             return NoContent();
         }
 
-        // DELETE api/Comments/5
+        // POST: api/Comments
+        [HttpPost]
+        public async Task<ActionResult<Comment>> PostComment(Comment comment)
+        {
+            _context.Comments.Add(comment);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetComment", new { id = comment.Id }, comment);
+        }
+
+        // DELETE: api/Comments/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Comment>> DeleteComment(int id)
         {
@@ -101,7 +108,7 @@ namespace dev_learning.Controllers
 
         private bool CommentExists(int id)
         {
-            return _context.Comments.Any(c => c.Id == id);
+            return _context.Comments.Any(e => e.Id == id);
         }
     }
 }
