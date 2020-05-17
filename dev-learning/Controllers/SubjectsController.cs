@@ -47,6 +47,14 @@ namespace dev_learning.Controllers
         {
             _context.Subjects.Add(subject);
             await _context.SaveChangesAsync();
+
+            if (subject.ParentId == null)
+            {
+                subject.ParentId = subject.Id;
+            }
+            _context.Entry(subject).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
             return NoContent();
         }
 
