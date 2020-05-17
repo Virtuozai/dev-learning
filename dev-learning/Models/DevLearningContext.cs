@@ -18,11 +18,6 @@ namespace dev_learning.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>()
-                .HasOne(t => t.Team)
-                .WithOne(u => u.TeamLead)
-                .HasForeignKey<Team>(u => u.TeamLeadId);
-
             modelBuilder.RemovePluralizingTableNameConvention();
         }
 
