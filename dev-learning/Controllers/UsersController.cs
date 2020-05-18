@@ -197,11 +197,15 @@ namespace dev_learning.Controllers
 
             for (int i = 1; i <= days; i++)
             {
+                var calendarDay = new CalendarDay(i);
                 var currentDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, i);
-                var currentUserSubject = userSubjects.Where(x => x.StartDateTime <= currentDate).Where(y => y.EndDateTime >= currentDate).FirstOrDefault();
+                var currentUserSubjects = userSubjects.Where(x => x.StartDateTime <= currentDate).Where(y => y.EndDateTime >= currentDate).ToList();
 
-                if (currentUserSubject != null) calendar.Add(new CalendarDay(i, currentUserSubject.Subject, currentUserSubject.IsLearned));
-                else calendar.Add(new CalendarDay(i, null, false));
+                for(int x = 0; x < currentUserSubjects.Count; x++)
+                {
+                    calendarDay.AddSubject(currentUserSubjects[x].Subject, currentUserSubjects[x].IsLearned);
+                }
+                calendar.Add(calendarDay);
             }
 
             return calendar;
