@@ -188,6 +188,13 @@ namespace dev_learning.Controllers
                 return Unauthorized();
             }
         }
+        
+        // GET: api/Users/team_users/5
+        [HttpGet("team_users/{teamId}")]
+        public async Task<List<User>> GetTeamUsers(int teamId)
+        {
+            return await _context.Users.Where(c => c.TeamId == teamId).ToListAsync();
+        }
 
         private async Task<List<CalendarDay>> GetUserCalendar(int id, int days)
         {
@@ -209,7 +216,6 @@ namespace dev_learning.Controllers
             }
 
             return calendar;
-        }
 
         private TinyUserInfo GetTinyUserInfo()
         {
