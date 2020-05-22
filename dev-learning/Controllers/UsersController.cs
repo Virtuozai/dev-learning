@@ -193,18 +193,24 @@ namespace dev_learning.Controllers
         {
             var calendar = new List<CalendarDay>();
 
-            var userSubjects = await _context.UserSubjects.Include(x => x.Subject).Where(u => u.UserId == id).ToListAsync();
-
             for (int i = 1; i <= days; i++)
             {
-                var calendarDay = new CalendarDay(i);
                 var currentDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, i);
-                var currentUserSubjects = userSubjects.Where(x => x.StartDateTime <= currentDate).Where(y => y.EndDateTime >= currentDate).ToList();
+                var userSubjects = await _context.UserSubjects.Include(s => s.Subject)
+                                                              .Where(u => u.UserId == id)
+                                                              .Where(x => x.StartDateTime <= currentDate)
+                                                              .Where(y => y.EndDateTime >= currentDate)
+                                                              .Select(c => new CustomUserSubject
+                                                              {
+                                                                  Id = c.Id,
+                                                                  Subject = c.Subject,
+                                                                  IsLearned = c.IsLearned,
+                                                                  StartDateTime = c.StartDateTime,
+                                                                  EndDateTime = c.EndDateTime
+                                                              })
+                                                              .ToListAsync();
+                var calendarDay = new CalendarDay(i, userSubjects);
 
-                for(int x = 0; x < currentUserSubjects.Count; x++)
-                {
-                    calendarDay.AddSubject(currentUserSubjects[x].Subject, currentUserSubjects[x].IsLearned);
-                }
                 calendar.Add(calendarDay);
             }
 

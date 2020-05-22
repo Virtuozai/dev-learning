@@ -7,17 +7,13 @@ namespace dev_learning.Models
 {
     public class CalendarDay
     {
-        public CalendarDay(int day)
+        public CalendarDay(int day, List<CustomUserSubject> userSubjects)
         {
             Day = day;
-            Subjects = new List<(bool, Subject)>();
+            UserSubjects = userSubjects;
         }
         public int Day { get; set; }
-        public List<(bool, Subject)> Subjects { get; set; }
+        public List<CustomUserSubject> UserSubjects { get; set; }
 
-        public void AddSubject(Subject subject, bool isLearned)
-        {
-            Subjects.Add((isLearned, subject));
-        }
     }
 }
