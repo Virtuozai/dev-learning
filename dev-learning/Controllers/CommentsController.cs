@@ -47,7 +47,9 @@ namespace dev_learning.Controllers
         [HttpGet("Subject/{subjectId}")]
         public async Task<List<Comment>> GetSubjectComments(int subjectId)
         {
-            return await _context.Comments.Include(u => u.User).Where(c => c.SubjectId == subjectId).ToListAsync();
+            var comments = await _context.Comments.Include(u => u.User).Where(c => c.SubjectId == subjectId).ToListAsync();
+            comments.Sort((a, b) => b.DateTime.CompareTo(a.DateTime));
+            return comments;
         }
 
         // PUT: api/Comments/5
@@ -84,6 +86,7 @@ namespace dev_learning.Controllers
         [HttpPost]
         public async Task<ActionResult<Comment>> PostComment(Comment comment)
         {
+            comment.DateTime = DateTime.Now;
             _context.Comments.Add(comment);
             await _context.SaveChangesAsync();
 
