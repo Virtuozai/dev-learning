@@ -9,6 +9,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using dev_learning.Constants;
 using System;
+using System.Collections;
 
 namespace dev_learning.Controllers
 {
@@ -44,6 +45,35 @@ namespace dev_learning.Controllers
             }
 
             return user;
+        }
+
+        // GET: api/Users/5/Calendar
+        [HttpGet("{id}/Calendar")]
+        public async Task<ActionResult<List<(int, List<CalendarDay>)>>> GetCalendarByUserId(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+
+            int days = DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month);
+
+            var result = new List<(int, List<CalendarDay>)>();
+
+            if(user.Role == UserRole.TeamLead)
+            {
+                var teamMembers = await _context.Users.Where(x => x.TeamId == user.TeamId).ToListAsync();
+
+                for(int i = 0; i < teamMembers.Count; i++)
+                {
+                    var calendar = await GetUserCalendar(teamMembers[i].Id, days);
+                    result.Add((teamMembers[i].Id, calendar));
+                }
+            }
+            else
+            {
+                var calendar = await GetUserCalendar(id, days);
+                result.Add((id, calendar));
+            }
+
+            return result;
         }
 
         // PUT: api/Users/5
@@ -158,12 +188,40 @@ namespace dev_learning.Controllers
                 return Unauthorized();
             }
         }
-
+        
         // GET: api/Users/team_users/5
         [HttpGet("team_users/{teamId}")]
         public async Task<List<User>> GetTeamUsers(int teamId)
         {
             return await _context.Users.Where(c => c.TeamId == teamId).ToListAsync();
+        }
+
+        private async Task<List<CalendarDay>> GetUserCalendar(int id, int days)
+        {
+            var calendar = new List<CalendarDay>();
+
+            for (int i = 1; i <= days; i++)
+            {
+                var currentDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, i);
+                var userSubjects = await _context.UserSubjects.Include(s => s.Subject)
+                                                              .Where(u => u.UserId == id)
+                                                              .Where(x => x.StartDateTime <= currentDate)
+                                                              .Where(y => y.EndDateTime >= currentDate)
+                                                              .Select(c => new CustomUserSubject
+                                                              {
+                                                                  Id = c.Id,
+                                                                  Subject = c.Subject,
+                                                                  IsLearned = c.IsLearned,
+                                                                  StartDateTime = c.StartDateTime,
+                                                                  EndDateTime = c.EndDateTime
+                                                              })
+                                                              .ToListAsync();
+                var calendarDay = new CalendarDay(i, userSubjects);
+
+                calendar.Add(calendarDay);
+            }
+
+            return calendar;
         }
 
         private TinyUserInfo GetTinyUserInfo()
