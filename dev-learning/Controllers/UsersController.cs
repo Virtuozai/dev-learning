@@ -222,6 +222,7 @@ namespace dev_learning.Controllers
             }
 
             return calendar;
+        }
 
         private TinyUserInfo GetTinyUserInfo()
         {
