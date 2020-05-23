@@ -20,6 +20,14 @@ namespace dev_learning.Controllers
             _context = context;
         }
 
+        // GET: api/UserSubjects/5
+        [HttpGet("{id}")]
+        public async Task<UserSubject> GetUserSubjectsById(int id)
+        {
+            var userSubject = await _context.UserSubjects.FindAsync(id);
+            return userSubject;
+        }
+
         // GET: api/UserSubjects/User/5
         [HttpGet("User/{userId}")]
         public async Task<List<UserSubject>> GetUserSubjectsByUserId(int userId)
@@ -45,10 +53,9 @@ namespace dev_learning.Controllers
             return NoContent();
         }
 
-
         // PUT: api/UserSubject/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUserSubject(int id, Subject userSubject)
+        public async Task<IActionResult> PutUserSubject(int id, UserSubject userSubject)
         {
             if (id != userSubject.Id)
             {
