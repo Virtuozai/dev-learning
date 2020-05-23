@@ -24,7 +24,7 @@ namespace dev_learning.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Comment>>> GetComments()
         {
-            return await _context.Comments.ToListAsync();
+            return await _context.Comments.Include(c => c.User).ToListAsync();
         }
 
         // GET: api/Comments/5
@@ -33,7 +33,6 @@ namespace dev_learning.Controllers
         {
             var comment = await _context.Comments.FindAsync(id);
             comment.User = await _context.Users.FindAsync(comment.UserId);
-            comment.Subject = await _context.Subjects.FindAsync(comment.SubjectId);
 
             if (comment == null)
             {
@@ -48,6 +47,15 @@ namespace dev_learning.Controllers
         public async Task<List<Comment>> GetSubjectComments(int subjectId)
         {
             var comments = await _context.Comments.Include(u => u.User).Where(c => c.SubjectId == subjectId).ToListAsync();
+            comments.Sort((a, b) => b.DateTime.CompareTo(a.DateTime));
+            return comments;
+        }
+
+        // GET: api/Comments/UserSubject/5
+        [HttpGet("UserSubject/{userSubjectId}")]
+        public async Task<List<Comment>> GetUserSubjectComments(int userSubjectId)
+        {
+            var comments = await _context.Comments.Include(u => u.User).Where(c => c.UserSubjectId == userSubjectId).ToListAsync();
             comments.Sort((a, b) => b.DateTime.CompareTo(a.DateTime));
             return comments;
         }
