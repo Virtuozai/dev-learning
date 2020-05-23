@@ -45,10 +45,9 @@ namespace dev_learning.Controllers
             return NoContent();
         }
 
-
         // PUT: api/UserSubject/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUserSubject(int id, Subject userSubject)
+        public async Task<IActionResult> PutUserSubject(int id, UserSubject userSubject)
         {
             if (id != userSubject.Id)
             {
