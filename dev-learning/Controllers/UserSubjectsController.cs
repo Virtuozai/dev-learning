@@ -48,6 +48,30 @@ namespace dev_learning.Controllers
         [HttpPost]
         public async Task<IActionResult> PostUserSubject(UserSubject userSubject)
         {
+            var days = userSubject.EndDateTime.Day - userSubject.StartDateTime.Day + 1;
+            var user = _context.Users.Find(userSubject.UserId);
+
+            if (user.LearningDaysLeft < days)
+            {
+                Response.StatusCode = 400;
+                return Content("Not enough learning days left");
+            }
+            if(userSubject.StartDateTime < DateTime.Now || userSubject.StartDateTime > userSubject.EndDateTime)
+            {
+                Response.StatusCode = 400;
+                return Content("Incorrect start and end datetimes");
+            }
+            var userSubjects = _context.UserSubjects.Where(u => u.UserId == userSubject.UserId)
+                                                    .Where(s => s.StartDateTime.Date == userSubject.StartDateTime.Date)
+                                                    .ToList();
+            if(userSubjects.Count > 0)
+            {
+                Response.StatusCode = 400;
+                return Content("This user subject for this date already exists");
+            }
+            user.LearningDaysLeft -= days;
+
+            _context.Users.Update(user);
             _context.UserSubjects.Add(userSubject);
             await _context.SaveChangesAsync();
             return NoContent();
