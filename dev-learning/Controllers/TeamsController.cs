@@ -45,6 +45,10 @@ namespace dev_learning.Controllers
         [HttpPost]
         public async Task<IActionResult> PostTeam([FromBody]Team team)
         {
+            var user = _context.Users.Find(team.TeamLeadId);
+            if (user.Role != UserRole.God && user.Role != UserRole.TeamLead) user.Role = UserRole.TeamLead;
+
+            _context.Users.Update(user);
             _context.Teams.Add(team);
             await _context.SaveChangesAsync();
             return NoContent();
