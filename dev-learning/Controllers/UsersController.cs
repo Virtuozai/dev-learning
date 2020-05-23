@@ -57,7 +57,7 @@ namespace dev_learning.Controllers
 
             var result = new List<(int, List<CalendarDay>)>();
 
-            if(user.Role == UserRole.TeamLead)
+            if(user.Role == UserRole.TeamLead && user.TeamId != null)
             {
                 var teamMembers = await _context.Users.Where(x => x.TeamId == user.TeamId).ToListAsync();
 
