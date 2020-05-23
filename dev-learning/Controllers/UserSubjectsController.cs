@@ -40,6 +40,17 @@ namespace dev_learning.Controllers
         [HttpPost]
         public async Task<IActionResult> PostUserSubject(UserSubject userSubject)
         {
+            var days = userSubject.EndDateTime.Day - userSubject.StartDateTime.Day + 1;
+            var user = _context.Users.Find(userSubject.UserId);
+
+            if (user.LearningDaysLeft < days)
+            {
+                Response.StatusCode = 400;
+                return Content("Not enough learning days left");
+            }
+            user.LearningDaysLeft -= days;
+
+            _context.Users.Update(user);
             _context.UserSubjects.Add(userSubject);
             await _context.SaveChangesAsync();
             return NoContent();
