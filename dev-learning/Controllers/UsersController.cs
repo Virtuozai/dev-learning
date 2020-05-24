@@ -108,8 +108,9 @@ namespace dev_learning.Controllers
 
         // POST: api/Users
         [HttpPost]
-        public async Task<IActionResult> PostUser(User user)
+        public async Task<IActionResult> PostUser(NewUser newUser)
         {
+            var user = new User(newUser.Id, newUser.TeamId, newUser.FirstName, newUser.LastName, newUser.Email, newUser.Password, newUser.Role, newUser.LearningDaysLeft);
             
             var isEmailValid = RegexUtilities.IsEmailValid(user.Email);
             if (isEmailValid)
