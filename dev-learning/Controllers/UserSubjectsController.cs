@@ -56,15 +56,16 @@ namespace dev_learning.Controllers
                 Response.StatusCode = 400;
                 return Content("Not enough learning days left");
             }
-            if(userSubject.StartDateTime < DateTime.Now || userSubject.StartDateTime > userSubject.EndDateTime)
+            if(userSubject.StartDateTime > userSubject.EndDateTime)
             {
                 Response.StatusCode = 400;
                 return Content("Incorrect start and end datetimes");
             }
             var userSubjects = _context.UserSubjects.Where(u => u.UserId == userSubject.UserId)
+                                                    .Where(s => s.SubjectId == userSubject.SubjectId)
                                                     .Where(s => s.StartDateTime.Date == userSubject.StartDateTime.Date)
                                                     .ToList();
-            if(userSubjects.Count > 0)
+            if (userSubjects.Count > 0)
             {
                 Response.StatusCode = 400;
                 return Content("This user subject for this date already exists");
