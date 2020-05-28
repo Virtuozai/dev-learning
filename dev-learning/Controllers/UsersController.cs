@@ -86,6 +86,7 @@ namespace dev_learning.Controllers
             }
 
             _context.Entry(user).State = EntityState.Modified;
+            _context.Entry(user).Property(e => e.Password).IsModified = false;
 
             try
             {
@@ -192,7 +193,7 @@ namespace dev_learning.Controllers
         
         // GET: api/Users/team_users/5
         [HttpGet("team_users/{teamId}")]
-        public async Task<List<User>> GetTeamUsers(int teamId)
+        public async Task<ActionResult<IEnumerable<User>>> GetTeamUsers(int teamId)
         {
             return await _context.Users.Where(c => c.TeamId == teamId).ToListAsync();
         }
