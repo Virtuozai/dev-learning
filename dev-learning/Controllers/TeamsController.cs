@@ -46,10 +46,14 @@ namespace dev_learning.Controllers
         public async Task<IActionResult> PostTeam([FromBody]Team team)
         {
             var user = _context.Users.Find(team.TeamLeadId);
-            if (user.Role != UserRole.God && user.Role != UserRole.TeamLead) user.Role = UserRole.TeamLead;
-
-            _context.Users.Update(user);
+            if (user.Role != UserRole.God && user.Role != UserRole.TeamLead)
+            {
+                user.Role = UserRole.TeamLead;
+            }
             _context.Teams.Add(team);
+            await _context.SaveChangesAsync();
+            user.TeamId = team.Id;
+            _context.Users.Update(user);
             await _context.SaveChangesAsync();
             return NoContent();
         }
