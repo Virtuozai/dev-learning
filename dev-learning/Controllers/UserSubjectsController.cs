@@ -86,7 +86,20 @@ namespace dev_learning.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(userSubject).State = EntityState.Modified;
+            List<UserSubject> userSubjects = new List<UserSubject>();
+
+            if (userSubject.IsLearned == true)
+            {
+                userSubjects = _context.UserSubjects.Where(u => u.UserId == userSubject.UserId)
+                                                        .Where(s => s.SubjectId == userSubject.SubjectId).ToList();
+                for (int i = 0; i < userSubjects.Count; i++) userSubjects[i].IsLearned = true;
+            }
+            else userSubjects.Add(userSubject);
+
+            for(int i = 0; i < userSubjects.Count; i++)
+            {
+                _context.Entry(userSubjects[i]).State = EntityState.Modified;
+            }
 
             try
             {
