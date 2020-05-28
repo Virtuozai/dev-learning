@@ -206,10 +206,11 @@ namespace dev_learning.Controllers
             for (int i = 1; i <= days; i++)
             {
                 var currentDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, i);
+
                 var userSubjects = await _context.UserSubjects.Include(s => s.Subject)
                                                               .Where(u => u.UserId == id)
-                                                              .Where(x => x.StartDateTime <= currentDate)
-                                                              .Where(y => y.EndDateTime >= currentDate)
+                                                              .Where(x => x.StartDateTime.Date <= currentDate.Date)
+                                                              .Where(y => y.EndDateTime.Date >= currentDate.Date)
                                                               .Select(c => new CustomUserSubject
                                                               {
                                                                   Id = c.Id,
