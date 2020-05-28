@@ -108,6 +108,7 @@ namespace dev_learning.Controllers
         }
 
         // POST: api/Users
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> PostUser(NewUser newUser)
         {
