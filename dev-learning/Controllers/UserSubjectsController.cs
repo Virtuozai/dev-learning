@@ -51,7 +51,9 @@ namespace dev_learning.Controllers
             var days = userSubject.EndDateTime.Day - userSubject.StartDateTime.Day + 1;
             var month = userSubject.StartDateTime.Month;
             var user = _context.Users.Find(userSubject.UserId);
-            var userSubjectsForMonth = _context.UserSubjects.Where(u => u.StartDateTime.Month == month).ToList();
+            var userSubjectsForMonth = _context.UserSubjects.Where(u => u.UserId == user.Id)
+                                                            .Where(u => u.StartDateTime.Month == month)
+                                                            .ToList();
             
             if (userSubjectsForMonth.Count + days > 5)
             {
