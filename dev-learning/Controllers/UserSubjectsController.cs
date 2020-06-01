@@ -54,6 +54,7 @@ namespace dev_learning.Controllers
             var userSubjectsForMonth = _context.UserSubjects.Where(u => u.UserId == user.Id)
                                                             .Where(u => u.StartDateTime.Month == month)
                                                             .ToList();
+                                                            
             for (int i = 0; i < userSubjectsForMonth.Count; i++) {
                 days += (userSubjectsForMonth[i].EndDateTime.Day - userSubjectsForMonth[i].StartDateTime.Day + 1);
             }
