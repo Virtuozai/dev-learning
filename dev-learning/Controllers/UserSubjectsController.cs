@@ -49,12 +49,14 @@ namespace dev_learning.Controllers
         public async Task<IActionResult> PostUserSubject(UserSubject userSubject)
         {
             var days = userSubject.EndDateTime.Day - userSubject.StartDateTime.Day + 1;
+            var month = userSubject.StartDateTime.Month;
             var user = _context.Users.Find(userSubject.UserId);
-
-            if (user.LearningDaysLeft < days)
+            var userSubjectsForMonth = _context.UserSubjects.Where(u => u.StartDateTime.Month == month).ToList();
+            
+            if (userSubjectsForMonth.Count + days > 5)
             {
                 Response.StatusCode = 400;
-                return Content("Not enough learning days left");
+                return Content("Not enough learning days left for this month");
             }
             if(userSubject.StartDateTime > userSubject.EndDateTime)
             {
