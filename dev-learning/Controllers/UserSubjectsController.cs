@@ -54,8 +54,12 @@ namespace dev_learning.Controllers
             var userSubjectsForMonth = _context.UserSubjects.Where(u => u.UserId == user.Id)
                                                             .Where(u => u.StartDateTime.Month == month)
                                                             .ToList();
-            
-            if (userSubjectsForMonth.Count + days > 5)
+                                                            
+            for (int i = 0; i < userSubjectsForMonth.Count; i++) {
+                days += (userSubjectsForMonth[i].EndDateTime.Day - userSubjectsForMonth[i].StartDateTime.Day + 1);
+            }
+
+            if (days > 5)
             {
                 Response.StatusCode = 400;
                 return Content("Not enough learning days left for this month");
